@@ -56,16 +56,16 @@ const OrderBookRow: React.FC<{
             isBid ? 'text-buy-primary' : 'text-sell-primary'
           )}
         >
-          {level.price.toFixed(2)}
+          {Number(level.price).toFixed(2)}
         </span>
         
         <span className="quantity-display">
-          {level.size.toFixed(6)}
+          {Number(level.size).toFixed(6)}
         </span>
         
         {level.total && (
           <span className="quantity-display text-xs">
-            {level.total.toFixed(6)}
+            {Number(level.total).toFixed(6)}
           </span>
         )}
       </div>
@@ -113,8 +113,8 @@ export const OrderBook: React.FC<OrderBookProps> = ({
     };
   }, [orderbook]);
 
-  const bestBid = processedBids[0]?.price || 0;
-  const bestAsk = processedAsks[processedAsks.length - 1]?.price || 0;
+  const bestBid = Number(processedBids[0]?.price) || 0;
+  const bestAsk = Number(processedAsks[processedAsks.length - 1]?.price) || 0;
   const spread = bestAsk - bestBid;
   const spreadPercent = ((spread / bestBid) * 100) || 0;
 

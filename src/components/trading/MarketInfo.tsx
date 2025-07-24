@@ -32,7 +32,16 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
   }
 
   const { ticker } = marketData;
-  const isPositive = ticker.changePercent24h >= 0;
+  
+  // Convert ticker values to numbers to handle API string responses
+  const lastPrice = Number(ticker.lastPrice) || 0;
+  const change24h = Number(ticker.change24h) || 0;
+  const changePercent24h = Number(ticker.changePercent24h) || 0;
+  const volume24h = Number(ticker.volume24h) || 0;
+  const high24h = Number(ticker.high24h) || 0;
+  const low24h = Number(ticker.low24h) || 0;
+  
+  const isPositive = changePercent24h >= 0;
   
   return (
     <Card className={cn("bg-trading-surface border-trading-border", className)}>
@@ -64,7 +73,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
               <span>Last Price</span>
             </div>
             <div className="text-xl font-mono font-bold">
-              ${ticker.lastPrice.toFixed(2)}
+              ${lastPrice.toFixed(2)}
             </div>
           </div>
 
@@ -75,9 +84,9 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
               "font-mono font-semibold",
               isPositive ? "text-buy-primary" : "text-sell-primary"
             )}>
-              <div>${ticker.change24h.toFixed(2)}</div>
+              <div>${change24h.toFixed(2)}</div>
               <div className="text-sm">
-                {isPositive ? '+' : ''}{ticker.changePercent24h.toFixed(2)}%
+                {isPositive ? '+' : ''}{changePercent24h.toFixed(2)}%
               </div>
             </div>
           </div>
@@ -89,7 +98,7 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
               <span>24h Volume</span>
             </div>
             <div className="font-mono font-semibold">
-              ${(ticker.volume24h / 1000000).toFixed(2)}M
+              ${(volume24h / 1000000).toFixed(2)}M
             </div>
           </div>
 
@@ -98,10 +107,10 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
             <div className="text-sm text-muted-foreground">24h Range</div>
             <div className="space-y-1">
               <div className="text-sm font-mono">
-                <span className="text-sell-primary">L</span>: ${ticker.low24h.toFixed(2)}
+                <span className="text-sell-primary">L</span>: ${low24h.toFixed(2)}
               </div>
               <div className="text-sm font-mono">
-                <span className="text-buy-primary">H</span>: ${ticker.high24h.toFixed(2)}
+                <span className="text-buy-primary">H</span>: ${high24h.toFixed(2)}
               </div>
             </div>
           </div>
@@ -113,9 +122,9 @@ export const MarketInfo: React.FC<MarketInfoProps> = ({
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Spread</span>
               <span className="font-mono">
-                {(marketData.orderbook.asks[0]?.price - marketData.orderbook.bids[0]?.price).toFixed(2)}
+                {(Number(marketData.orderbook.asks[0]?.price) - Number(marketData.orderbook.bids[0]?.price)).toFixed(2)}
                 <span className="text-muted-foreground ml-1">
-                  ({(((marketData.orderbook.asks[0]?.price - marketData.orderbook.bids[0]?.price) / marketData.orderbook.bids[0]?.price) * 100).toFixed(3)}%)
+                  ({(((Number(marketData.orderbook.asks[0]?.price) - Number(marketData.orderbook.bids[0]?.price)) / Number(marketData.orderbook.bids[0]?.price)) * 100).toFixed(3)}%)
                 </span>
               </span>
             </div>
