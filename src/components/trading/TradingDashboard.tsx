@@ -65,48 +65,48 @@ export const TradingDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6">
+    <div className="min-h-screen bg-background p-2 sm:p-4 lg:p-6 space-y-4 lg:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-8 h-8 text-blue-accent" />
-            <h1 className="text-3xl font-bold">OrderBook Pro</h1>
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-blue-accent" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">OrderBook Pro</h1>
           </div>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-xs hidden sm:inline-flex">
             Real-Time Trading Simulator
           </Badge>
         </div>
         
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleRefresh}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button variant="outline" size="sm" onClick={handleRefresh} className="flex-1 sm:flex-none">
+            <RefreshCw className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Refresh</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
+          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+            <Settings className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Settings</span>
           </Button>
         </div>
       </div>
 
       {/* Symbol Input & Status */}
       <Card className="bg-trading-surface border-trading-border">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="space-y-1">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
+              <div className="space-y-1 w-full sm:w-auto">
                 <Label htmlFor="symbol" className="text-sm">Trading Symbol</Label>
                 <Input
                   id="symbol"
                   value={activeSymbol}
                   onChange={(e) => handleSymbolChange(e.target.value)}
                   placeholder="BTC-USDT"
-                  className="w-32 font-mono"
+                  className="w-full sm:w-32 font-mono"
                 />
               </div>
               
-              <div className="flex items-center gap-2 text-sm">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
                 <Activity className="w-4 h-4 text-blue-accent" />
                 <span className="text-muted-foreground">Active:</span>
                 <Badge variant="outline">{activeVenue}</Badge>
@@ -120,8 +120,8 @@ export const TradingDashboard: React.FC = () => {
             </div>
             
             {activeData.error && (
-              <div className="text-sm text-sell-primary bg-sell-primary/10 px-3 py-1 rounded">
-                {activeData.error}
+              <div className="text-sm text-sell-primary bg-sell-primary/10 px-3 py-1 rounded max-w-full overflow-hidden">
+                <div className="truncate">{activeData.error}</div>
               </div>
             )}
           </div>
@@ -141,9 +141,9 @@ export const TradingDashboard: React.FC = () => {
       />
 
       {/* Main Trading Interface */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
         {/* Order Book */}
-        <div className="lg:col-span-2">
+        <div className="xl:col-span-2 order-2 xl:order-1">
           {activeData.marketData ? (
             <OrderBook
               orderbook={activeData.marketData.orderbook}
@@ -152,18 +152,18 @@ export const TradingDashboard: React.FC = () => {
               simulatedOrder={simulatedOrder}
             />
           ) : (
-            <Card className="bg-trading-surface border-trading-border">
+            <Card className="bg-trading-surface border-trading-border h-fit">
               <CardHeader>
                 <CardTitle>Order Book</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-center h-64">
+                <div className="flex items-center justify-center h-64 lg:h-96">
                   <div className="text-center space-y-2">
                     <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground text-sm sm:text-base">
                       Waiting for market data from {activeVenue}...
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Symbol: {activeSymbol}
                     </p>
                   </div>
@@ -174,7 +174,7 @@ export const TradingDashboard: React.FC = () => {
         </div>
 
         {/* Order Form */}
-        <div>
+        <div className="order-1 xl:order-2">
           <OrderForm
             marketData={activeData.marketData}
             onSimulateOrder={handleOrderSimulation}
@@ -191,7 +191,7 @@ export const TradingDashboard: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
             {(['OKX', 'Bybit', 'Deribit'] as const).map((venue) => {
               const data = allVenueData[venue];
               const bestBid = Number(data.marketData?.orderbook.bids[0]?.price) || 0;
@@ -202,43 +202,43 @@ export const TradingDashboard: React.FC = () => {
                 <div
                   key={venue}
                   className={cn(
-                    "p-4 rounded border transition-colors",
+                    "p-3 lg:p-4 rounded border transition-colors",
                     venue === activeVenue 
                       ? "bg-blue-accent/10 border-blue-accent" 
                       : "bg-trading-hover border-trading-border"
                   )}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{venue}</h4>
+                    <h4 className="font-medium text-sm lg:text-base">{venue}</h4>
                     <div className={cn(
-                      "w-2 h-2 rounded-full",
+                      "w-2 h-2 rounded-full flex-shrink-0",
                       data.isConnected ? "bg-buy-primary" : "bg-sell-primary"
                     )} />
                   </div>
                   
                   {data.marketData ? (
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
+                    <div className="space-y-1 text-xs lg:text-sm">
+                      <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Bid:</span>
-                        <span className="font-mono text-buy-primary">
+                        <span className="font-mono text-buy-primary truncate ml-2">
                           ${bestBid.toFixed(2)}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Ask:</span>
-                        <span className="font-mono text-sell-primary">
+                        <span className="font-mono text-sell-primary truncate ml-2">
                           ${bestAsk.toFixed(2)}
                         </span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Spread:</span>
-                        <span className="font-mono">
+                        <span className="font-mono truncate ml-2">
                           ${spread.toFixed(2)}
                         </span>
                       </div>
                     </div>
                   ) : (
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs lg:text-sm text-muted-foreground">
                       {data.isConnected ? 'Loading...' : 'Disconnected'}
                     </div>
                   )}
