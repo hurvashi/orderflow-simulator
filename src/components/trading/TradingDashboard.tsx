@@ -1,0 +1,253 @@
+import React, { useState } from 'react';
+import { OrderBook } from './OrderBook';
+import { OrderForm } from './OrderForm';
+import { MarketInfo } from './MarketInfo';
+import { VenueSelector } from './VenueSelector';
+import { useMultiVenueData } from '@/hooks/useMarketData';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { OrderFormData } from '@/types/trading';
+import { cn } from '@/lib/utils';
+import { BarChart3, Settings, RefreshCw, TrendingUp, Activity } from 'lucide-react';
+
+export const TradingDashboard: React.FC = () => {
+  const {
+    activeVenue,
+    setActiveVenue,
+    activeSymbol,
+    setActiveSymbol,
+    activeData,
+    allVenueData
+  } = useMultiVenueData();
+
+  const [simulatedOrder, setSimulatedOrder] = useState<any>(null);
+
+  const connectionStatus = {
+    OKX: allVenueData.OKX.isConnected,
+    Bybit: allVenueData.Bybit.isConnected,
+    Deribit: allVenueData.Deribit.isConnected
+  };
+
+  const handleOrderSimulation = (orderData: OrderFormData) => {
+    try {
+      const simulation = activeData.simulateOrder(orderData);
+      
+      // Create simulated order visualization data
+      const simulatedOrderViz = {
+        side: orderData.side,
+        price: orderData.price || (orderData.side === 'Buy' 
+          ? activeData.marketData?.orderbook.bids[0]?.price 
+          : activeData.marketData?.orderbook.asks[0]?.price) || 0,
+        quantity: orderData.quantity,
+        position: simulation.position
+      };
+      
+      setSimulatedOrder(simulatedOrderViz);
+      
+      return simulation;
+    } catch (error) {
+      console.error('Order simulation error:', error);
+      throw error;
+    }
+  };
+
+  const handleSymbolChange = (symbol: string) => {
+    setActiveSymbol(symbol);
+    setSimulatedOrder(null); // Clear simulation when symbol changes
+  };
+
+  const handleRefresh = () => {
+    // Force reconnection
+    window.location.reload();
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-4 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-8 h-8 text-blue-accent" />
+            <h1 className="text-3xl font-bold">OrderBook Pro</h1>
+          </div>
+          <Badge variant="outline" className="text-xs">
+            Real-Time Trading Simulator
+          </Badge>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleRefresh}>
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
+          <Button variant="outline" size="sm">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </div>
+      </div>
+
+      {/* Symbol Input & Status */}
+      <Card className="bg-trading-surface border-trading-border">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="symbol" className="text-sm">Trading Symbol</Label>
+                <Input
+                  id="symbol"
+                  value={activeSymbol}
+                  onChange={(e) => handleSymbolChange(e.target.value)}
+                  placeholder="BTC-USDT"
+                  className="w-32 font-mono"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm">
+                <Activity className="w-4 h-4 text-blue-accent" />
+                <span className="text-muted-foreground">Active:</span>
+                <Badge variant="outline">{activeVenue}</Badge>
+                <Badge 
+                  variant={activeData.isConnected ? "default" : "destructive"}
+                  className="text-xs"
+                >
+                  {activeData.isConnected ? 'CONNECTED' : 'DISCONNECTED'}
+                </Badge>
+              </div>
+            </div>
+            
+            {activeData.error && (
+              <div className="text-sm text-sell-primary bg-sell-primary/10 px-3 py-1 rounded">
+                {activeData.error}
+              </div>
+            )}
+          </div>
+
+          <VenueSelector
+            activeVenue={activeVenue}
+            onVenueChange={setActiveVenue}
+            connectionStatus={connectionStatus}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Market Info */}
+      <MarketInfo 
+        marketData={activeData.marketData}
+        isConnected={activeData.isConnected}
+      />
+
+      {/* Main Trading Interface */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Order Book */}
+        <div className="lg:col-span-2">
+          {activeData.marketData ? (
+            <OrderBook
+              orderbook={activeData.marketData.orderbook}
+              venue={activeData.marketData.venue}
+              symbol={activeData.marketData.symbol}
+              simulatedOrder={simulatedOrder}
+            />
+          ) : (
+            <Card className="bg-trading-surface border-trading-border">
+              <CardHeader>
+                <CardTitle>Order Book</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center space-y-2">
+                    <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                    <p className="text-muted-foreground">
+                      Waiting for market data from {activeVenue}...
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Symbol: {activeSymbol}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Order Form */}
+        <div>
+          <OrderForm
+            marketData={activeData.marketData}
+            onSimulateOrder={handleOrderSimulation}
+          />
+        </div>
+      </div>
+
+      {/* Multi-Venue Comparison */}
+      <Card className="bg-trading-surface border-trading-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-blue-accent" />
+            Multi-Venue Comparison
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(['OKX', 'Bybit', 'Deribit'] as const).map((venue) => {
+              const data = allVenueData[venue];
+              const bestBid = data.marketData?.orderbook.bids[0]?.price || 0;
+              const bestAsk = data.marketData?.orderbook.asks[0]?.price || 0;
+              const spread = bestAsk - bestBid;
+              
+              return (
+                <div
+                  key={venue}
+                  className={cn(
+                    "p-4 rounded border transition-colors",
+                    venue === activeVenue 
+                      ? "bg-blue-accent/10 border-blue-accent" 
+                      : "bg-trading-hover border-trading-border"
+                  )}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">{venue}</h4>
+                    <div className={cn(
+                      "w-2 h-2 rounded-full",
+                      data.isConnected ? "bg-buy-primary" : "bg-sell-primary"
+                    )} />
+                  </div>
+                  
+                  {data.marketData ? (
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Bid:</span>
+                        <span className="font-mono text-buy-primary">
+                          ${bestBid.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ask:</span>
+                        <span className="font-mono text-sell-primary">
+                          ${bestAsk.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Spread:</span>
+                        <span className="font-mono">
+                          ${spread.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      {data.isConnected ? 'Loading...' : 'Disconnected'}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};

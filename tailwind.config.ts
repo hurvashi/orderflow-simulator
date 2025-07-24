@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				inter: ['Inter', 'sans-serif'],
+				mono: ['JetBrains Mono', 'monospace'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -52,16 +56,33 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				// Trading Platform Colors
+				'trading-surface': 'hsl(var(--trading-surface))',
+				'trading-border': 'hsl(var(--trading-border))',
+				'trading-hover': 'hsl(var(--trading-hover))',
+				'buy-primary': 'hsl(var(--buy-primary))',
+				'buy-secondary': 'hsl(var(--buy-secondary))',
+				'buy-muted': 'hsl(var(--buy-muted))',
+				'sell-primary': 'hsl(var(--sell-primary))',
+				'sell-secondary': 'hsl(var(--sell-secondary))',
+				'sell-muted': 'hsl(var(--sell-muted))',
+				'gold-accent': 'hsl(var(--gold-accent))',
+				'blue-accent': 'hsl(var(--blue-accent))',
+				'purple-accent': 'hsl(var(--purple-accent))',
+			},
+			backgroundImage: {
+				'gradient-buy': 'var(--gradient-buy)',
+				'gradient-sell': 'var(--gradient-sell)',
+				'gradient-surface': 'var(--gradient-surface)',
+				'gradient-gold': 'var(--gradient-gold)',
+			},
+			boxShadow: {
+				'trading': 'var(--shadow-trading)',
+				'glow-buy': 'var(--shadow-glow-buy)',
+				'glow-sell': 'var(--shadow-glow-sell)',
+			},
+			transitionTimingFunction: {
+				'trading': 'cubic-bezier(0.4, 0, 0.2, 1)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
