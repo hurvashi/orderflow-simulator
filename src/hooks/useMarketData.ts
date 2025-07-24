@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { MarketData, VenueType, OrderFormData, OrderSimulation } from '@/types/trading';
 import { tradingApi } from '@/services/tradingApi';
@@ -53,7 +54,7 @@ export const useMarketData = (venue: VenueType, symbol: string) => {
     }
 
     const { orderbook } = marketData;
-    const { side, price, quantity, orderType } = orderData;
+    const { side, price, quantity, orderType, timing } = orderData;
 
     // For market orders, use best available price
     let executionPrice = price;
@@ -129,14 +130,40 @@ export const useMarketData = (venue: VenueType, symbol: string) => {
     );
     marketImpact = (orderValue / totalBookValue) * 100;
 
-    // Estimate time to fill (simplified)
+    // Realistic time to fill estimation
     let timeToFill: number | undefined;
-    if (orderType === 'Limit') {
-      // Simplified time estimation based on position and market activity
-      const baseTime = position * 0.5; // Assume 0.5s per level ahead
-      const marketVolume = marketData.ticker?.volume24h || 1000000;
-      const volumeMultiplier = Math.max(0.1, 1000000 / marketVolume);
-      timeToFill = Math.round(baseTime * volumeMultiplier);
+    
+    if (orderType === 'Market') {
+      // Market orders typically fill within 50-200ms in real markets
+      timeToFill = 0.05 + Math.random() * 0.15; // 50-200ms
+    } else {
+      // Limit orders - more realistic timing based on position and market conditions
+      const baseTimePerLevel = 2; // 2 seconds per level ahead in queue
+      const marketVolumeMultiplier = Math.max(0.1, 1000000 / (marketData.ticker?.volume24h || 1000000));
+      const volatilityMultiplier = Math.max(0.5, slippage / 10); // Higher slippage = more volatile = faster fills
+      
+      // Base time calculation
+      let estimatedTime = position * baseTimePerLevel;
+      
+      // Apply multipliers
+      estimatedTime *= marketVolumeMultiplier; // Lower volume = longer wait
+      estimatedTime /= volatilityMultiplier; // Higher volatility = faster fills
+      
+      // Add some randomness for realism
+      estimatedTime *= (0.8 + Math.random() * 0.4); // ±20% variation
+      
+      // Apply timing delay from form
+      const timingDelays = {
+        'immediate': 0,
+        '5s': 5,
+        '10s': 10,
+        '30s': 30
+      };
+      
+      estimatedTime += timingDelays[timing];
+      
+      // Minimum 1 second, maximum 300 seconds (5 minutes) for limit orders
+      timeToFill = Math.max(1, Math.min(300, estimatedTime));
     }
 
     return {
