@@ -194,8 +194,8 @@ export const TradingDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {(['OKX', 'Bybit', 'Deribit'] as const).map((venue) => {
               const data = allVenueData[venue];
-              const bestBid = data.marketData?.orderbook.bids[0]?.price || 0;
-              const bestAsk = data.marketData?.orderbook.asks[0]?.price || 0;
+              const bestBid = Number(data.marketData?.orderbook.bids[0]?.price) || 0;
+              const bestAsk = Number(data.marketData?.orderbook.asks[0]?.price) || 0;
               const spread = bestAsk - bestBid;
               
               return (
