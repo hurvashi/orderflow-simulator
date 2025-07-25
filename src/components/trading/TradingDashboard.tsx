@@ -147,7 +147,7 @@ export const TradingDashboard: React.FC = () => {
         {/* Row 1: Order Book and Depth Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
           {/* Order Book Table */}
-          <div className="h-[500px]">
+          <div>
             {activeData.marketData ? (
               <OrderBook
                 orderbook={activeData.marketData.orderbook}
@@ -156,7 +156,7 @@ export const TradingDashboard: React.FC = () => {
                 simulatedOrder={simulatedOrder}
               />
             ) : (
-              <Card className="bg-trading-surface border-trading-border h-full">
+              <Card className="bg-trading-surface border-trading-border h-fit">
                 <CardHeader>
                   <CardTitle>Order Book</CardTitle>
                 </CardHeader>
@@ -175,16 +175,15 @@ export const TradingDashboard: React.FC = () => {
           </div>
 
           {/* Depth Chart */}
-          <div className="h-[500px]">
+          <div>
             {activeData.marketData ? (
               <OrderBookChart
                 orderbook={activeData.marketData.orderbook}
                 venue={activeData.marketData.venue}
                 symbol={activeData.marketData.symbol}
-                className="h-full"
               />
             ) : (
-              <Card className="bg-trading-surface border-trading-border h-full">
+              <Card className="bg-trading-surface border-trading-border h-fit">
                 <CardHeader>
                   <CardTitle>Depth Chart</CardTitle>
                 </CardHeader>
@@ -202,7 +201,7 @@ export const TradingDashboard: React.FC = () => {
         </div>
 
         {/* Row 2: Order Form */}
-        <div className="w-full">
+        <div className="max-w-md mx-auto lg:mx-0">
           <OrderForm
             marketData={activeData.marketData}
             onSimulateOrder={handleOrderSimulation}
