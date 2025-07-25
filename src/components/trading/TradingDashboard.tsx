@@ -143,66 +143,69 @@ export const TradingDashboard: React.FC = () => {
       />
 
       {/* Main Trading Interface */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
-        {/* Order Form */}
-        <div className="order-1">
+      <div className="space-y-4 lg:space-y-6">
+        {/* Row 1: Order Book and Depth Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+          {/* Order Book Table */}
+          <div>
+            {activeData.marketData ? (
+              <OrderBook
+                orderbook={activeData.marketData.orderbook}
+                venue={activeData.marketData.venue}
+                symbol={activeData.marketData.symbol}
+                simulatedOrder={simulatedOrder}
+              />
+            ) : (
+              <Card className="bg-trading-surface border-trading-border h-fit">
+                <CardHeader>
+                  <CardTitle>Order Book</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center space-y-2">
+                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                      <p className="text-muted-foreground text-sm">
+                        Waiting for market data...
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Depth Chart */}
+          <div>
+            {activeData.marketData ? (
+              <OrderBookChart
+                orderbook={activeData.marketData.orderbook}
+                venue={activeData.marketData.venue}
+                symbol={activeData.marketData.symbol}
+              />
+            ) : (
+              <Card className="bg-trading-surface border-trading-border h-fit">
+                <CardHeader>
+                  <CardTitle>Depth Chart</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center space-y-2">
+                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                      <p className="text-muted-foreground text-sm">Loading chart...</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Row 2: Order Form */}
+        <div className="max-w-md mx-auto lg:mx-0">
           <OrderForm
             marketData={activeData.marketData}
             onSimulateOrder={handleOrderSimulation}
           />
-        </div>
-
-        {/* Order Book Table */}
-        <div className="order-2">
-          {activeData.marketData ? (
-            <OrderBook
-              orderbook={activeData.marketData.orderbook}
-              venue={activeData.marketData.venue}
-              symbol={activeData.marketData.symbol}
-              simulatedOrder={simulatedOrder}
-            />
-          ) : (
-            <Card className="bg-trading-surface border-trading-border h-fit">
-              <CardHeader>
-                <CardTitle>Order Book</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-center space-y-2">
-                    <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                    <p className="text-muted-foreground text-sm">
-                      Waiting for market data...
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        {/* Charts */}
-        <div className="xl:col-span-2 order-3">
-          {activeData.marketData ? (
-            <OrderBookChart
-              orderbook={activeData.marketData.orderbook}
-              venue={activeData.marketData.venue}
-              symbol={activeData.marketData.symbol}
-            />
-          ) : (
-            <Card className="bg-trading-surface border-trading-border h-fit">
-              <CardHeader>
-                <CardTitle>Depth Chart</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-64">
-                  <div className="text-center space-y-2">
-                    <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                    <p className="text-muted-foreground text-sm">Loading chart...</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
 
