@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { OrderBook } from './OrderBook';
 import { OrderBookChart } from './OrderBookChart';
-import { VolumeChart } from './VolumeChart';
+
 import { OrderForm } from './OrderForm';
 import { MarketInfo } from './MarketInfo';
 import { VenueSelector } from './VenueSelector';
@@ -181,49 +181,27 @@ export const TradingDashboard: React.FC = () => {
         </div>
 
         {/* Charts */}
-        <div className="xl:col-span-2 order-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="xl:col-span-2 order-3">
           {activeData.marketData ? (
-            <>
-              <OrderBookChart
-                orderbook={activeData.marketData.orderbook}
-                venue={activeData.marketData.venue}
-                symbol={activeData.marketData.symbol}
-              />
-              <VolumeChart
-                orderbook={activeData.marketData.orderbook}
-                venue={activeData.marketData.venue}
-                symbol={activeData.marketData.symbol}
-              />
-            </>
+            <OrderBookChart
+              orderbook={activeData.marketData.orderbook}
+              venue={activeData.marketData.venue}
+              symbol={activeData.marketData.symbol}
+            />
           ) : (
-            <>
-              <Card className="bg-trading-surface border-trading-border h-fit">
-                <CardHeader>
-                  <CardTitle>Depth Chart</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center h-64">
-                    <div className="text-center space-y-2">
-                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                      <p className="text-muted-foreground text-sm">Loading chart...</p>
-                    </div>
+            <Card className="bg-trading-surface border-trading-border h-fit">
+              <CardHeader>
+                <CardTitle>Depth Chart</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center space-y-2">
+                    <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                    <p className="text-muted-foreground text-sm">Loading chart...</p>
                   </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-trading-surface border-trading-border h-fit">
-                <CardHeader>
-                  <CardTitle>Volume Chart</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center h-64">
-                    <div className="text-center space-y-2">
-                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                      <p className="text-muted-foreground text-sm">Loading chart...</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </>
+                </div>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
