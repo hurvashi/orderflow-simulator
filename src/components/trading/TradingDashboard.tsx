@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { OrderBook } from './OrderBook';
+import { OrderBookChart } from './OrderBookChart';
+import { VolumeChart } from './VolumeChart';
 import { OrderForm } from './OrderForm';
 import { MarketInfo } from './MarketInfo';
 import { VenueSelector } from './VenueSelector';
@@ -141,9 +143,17 @@ export const TradingDashboard: React.FC = () => {
       />
 
       {/* Main Trading Interface */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
-        {/* Order Book */}
-        <div className="xl:col-span-2 order-2 xl:order-1">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
+        {/* Order Form */}
+        <div className="order-1">
+          <OrderForm
+            marketData={activeData.marketData}
+            onSimulateOrder={handleOrderSimulation}
+          />
+        </div>
+
+        {/* Order Book Table */}
+        <div className="order-2">
           {activeData.marketData ? (
             <OrderBook
               orderbook={activeData.marketData.orderbook}
@@ -157,14 +167,11 @@ export const TradingDashboard: React.FC = () => {
                 <CardTitle>Order Book</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center justify-center h-64 lg:h-96">
+                <div className="flex items-center justify-center h-64">
                   <div className="text-center space-y-2">
                     <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                    <p className="text-muted-foreground text-sm sm:text-base">
-                      Waiting for market data from {activeVenue}...
-                    </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">
-                      Symbol: {activeSymbol}
+                    <p className="text-muted-foreground text-sm">
+                      Waiting for market data...
                     </p>
                   </div>
                 </div>
@@ -173,12 +180,51 @@ export const TradingDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Order Form */}
-        <div className="order-1 xl:order-2">
-          <OrderForm
-            marketData={activeData.marketData}
-            onSimulateOrder={handleOrderSimulation}
-          />
+        {/* Charts */}
+        <div className="xl:col-span-2 order-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {activeData.marketData ? (
+            <>
+              <OrderBookChart
+                orderbook={activeData.marketData.orderbook}
+                venue={activeData.marketData.venue}
+                symbol={activeData.marketData.symbol}
+              />
+              <VolumeChart
+                orderbook={activeData.marketData.orderbook}
+                venue={activeData.marketData.venue}
+                symbol={activeData.marketData.symbol}
+              />
+            </>
+          ) : (
+            <>
+              <Card className="bg-trading-surface border-trading-border h-fit">
+                <CardHeader>
+                  <CardTitle>Depth Chart</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center space-y-2">
+                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                      <p className="text-muted-foreground text-sm">Loading chart...</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-trading-surface border-trading-border h-fit">
+                <CardHeader>
+                  <CardTitle>Volume Chart</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-center h-64">
+                    <div className="text-center space-y-2">
+                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                      <p className="text-muted-foreground text-sm">Loading chart...</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </div>
       </div>
 
