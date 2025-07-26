@@ -2,8 +2,7 @@ import React, { useMemo } from 'react';
 import { OrderBook as OrderBookType } from '@/types/trading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, ResponsiveContainer, ReferenceLine, Tooltip } from 'recharts';
 import { cn } from '@/lib/utils';
 
 interface OrderBookChartProps {
@@ -138,9 +137,8 @@ export const OrderBookChart: React.FC<OrderBookChartProps> = ({
       </CardHeader>
       
       <CardContent className="p-0">
-        <div className="h-[400px] w-full">
-          <ChartContainer config={chartConfig} className="w-full h-full">
-            <ResponsiveContainer width="100%" height="100%">
+        <div className="h-[400px] w-full p-4">
+          <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <defs>
                 <linearGradient id="bidGradient" x1="0" y1="0" x2="0" y2="1">
@@ -193,18 +191,21 @@ export const OrderBookChart: React.FC<OrderBookChartProps> = ({
                 fillOpacity={1}
               />
               
-              <ChartTooltip
-                content={<ChartTooltipContent 
-                  formatter={(value, name) => [
-                    Number(value).toFixed(4),
-                    name === 'bidDepth' ? 'Cumulative Bids' : 'Cumulative Asks'
-                  ]}
-                  labelFormatter={(value) => `Price: $${Number(value).toFixed(2)}`}
-                />}
+              <Tooltip
+                formatter={(value, name) => [
+                  Number(value).toFixed(4),
+                  name === 'bidDepth' ? 'Cumulative Bids' : 'Cumulative Asks'
+                ]}
+                labelFormatter={(value) => `Price: $${Number(value).toFixed(2)}`}
+                contentStyle={{
+                  backgroundColor: 'hsl(var(--trading-surface))',
+                  border: '1px solid hsl(var(--trading-border))',
+                  borderRadius: '6px',
+                  fontSize: '12px'
+                }}
               />
             </AreaChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+          </ResponsiveContainer>
         </div>
         
         {/* Legend */}
