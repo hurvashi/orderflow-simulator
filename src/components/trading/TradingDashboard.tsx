@@ -172,42 +172,39 @@ export const TradingDashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Row 2: Order Form and Depth Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          {/* Order Form */}
-          <div className="h-[580px]">
-            <OrderForm
-              marketData={activeData.marketData}
-              onSimulateOrder={handleOrderSimulation}
-              className="h-full"
+        {/* Row 2: Depth Chart */}
+        <div>
+          {activeData.marketData ? (
+            <OrderBookChart
+              className="h-[580px]"
+              orderbook={activeData.marketData.orderbook}
+              venue={activeData.marketData.venue}
+              symbol={activeData.marketData.symbol}
             />
-          </div>
-
-          {/* Depth Chart */}
-          <div className="h-[580px]">
-            {activeData.marketData ? (
-              <OrderBookChart
-                className="h-full"
-                orderbook={activeData.marketData.orderbook}
-                venue={activeData.marketData.venue}
-                symbol={activeData.marketData.symbol}
-              />
-            ) : (
-              <Card className="bg-trading-surface border-trading-border h-full">
-                <CardHeader>
-                  <CardTitle>Depth Chart</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-center h-64">
-                    <div className="text-center space-y-2">
-                      <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
-                      <p className="text-muted-foreground text-sm">Loading chart...</p>
-                    </div>
+          ) : (
+            <Card className="bg-trading-surface border-trading-border h-[580px]">
+              <CardHeader>
+                <CardTitle>Depth Chart</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center space-y-2">
+                    <Activity className="w-8 h-8 text-blue-accent mx-auto animate-pulse" />
+                    <p className="text-muted-foreground text-sm">Loading chart...</p>
                   </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Row 3: Order Form - Full Width */}
+        <div className="w-full">
+          <OrderForm
+            marketData={activeData.marketData}
+            onSimulateOrder={handleOrderSimulation}
+            className="w-full"
+          />
         </div>
       </div>
 

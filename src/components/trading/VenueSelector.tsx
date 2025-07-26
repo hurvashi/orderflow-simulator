@@ -29,43 +29,43 @@ export const VenueSelector: React.FC<VenueSelectorProps> = ({
       </div>
       
       <Tabs value={activeVenue} onValueChange={(value) => onVenueChange(value as VenueType)}>
-        <TabsList className="grid w-full grid-cols-3 bg-trading-surface">
+        <TabsList className="grid w-full grid-cols-3 bg-trading-surface border border-trading-border">
           <TabsTrigger 
             value="OKX" 
-            className="data-[state=active]:bg-trading-hover data-[state=active]:text-foreground"
+            className="data-[state=active]:bg-blue-accent data-[state=active]:text-white hover:bg-trading-hover transition-all duration-200 border-r border-trading-border"
           >
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-2 h-2 rounded-full",
                 connectionStatus.OKX ? "bg-buy-primary" : "bg-sell-primary"
               )} />
-              OKX
+              <span className="font-medium">OKX</span>
             </div>
           </TabsTrigger>
           
           <TabsTrigger 
             value="Bybit"
-            className="data-[state=active]:bg-trading-hover data-[state=active]:text-foreground"
+            className="data-[state=active]:bg-blue-accent data-[state=active]:text-white hover:bg-trading-hover transition-all duration-200 border-r border-trading-border"
           >
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-2 h-2 rounded-full",
                 connectionStatus.Bybit ? "bg-buy-primary" : "bg-sell-primary"
               )} />
-              Bybit
+              <span className="font-medium">Bybit</span>
             </div>
           </TabsTrigger>
           
           <TabsTrigger 
             value="Deribit"
-            className="data-[state=active]:bg-trading-hover data-[state=active]:text-foreground"
+            className="data-[state=active]:bg-blue-accent data-[state=active]:text-white hover:bg-trading-hover transition-all duration-200"
           >
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-2 h-2 rounded-full",
                 connectionStatus.Deribit ? "bg-buy-primary" : "bg-sell-primary"
               )} />
-              Deribit
+              <span className="font-medium">Deribit</span>
             </div>
           </TabsTrigger>
         </TabsList>
