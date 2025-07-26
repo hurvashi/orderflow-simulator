@@ -175,23 +175,25 @@ export const TradingDashboard: React.FC = () => {
         {/* Row 2: Order Form and Depth Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
           {/* Order Form */}
-          <div>
+          <div className="h-[580px]">
             <OrderForm
               marketData={activeData.marketData}
               onSimulateOrder={handleOrderSimulation}
+              className="h-full"
             />
           </div>
 
           {/* Depth Chart */}
-          <div>
+          <div className="h-[580px]">
             {activeData.marketData ? (
               <OrderBookChart
+                className="h-full"
                 orderbook={activeData.marketData.orderbook}
                 venue={activeData.marketData.venue}
                 symbol={activeData.marketData.symbol}
               />
             ) : (
-              <Card className="bg-trading-surface border-trading-border h-fit">
+              <Card className="bg-trading-surface border-trading-border h-full">
                 <CardHeader>
                   <CardTitle>Depth Chart</CardTitle>
                 </CardHeader>
