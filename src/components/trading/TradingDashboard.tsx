@@ -14,8 +14,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrderFormData } from '@/types/trading';
 import { cn } from '@/lib/utils';
 import { BarChart3, Settings, RefreshCw, TrendingUp, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const TradingDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const {
     activeVenue,
     setActiveVenue,
@@ -91,7 +93,12 @@ export const TradingDashboard: React.FC = () => {
             <RefreshCw className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Refresh</span>
           </Button>
-          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex-1 sm:flex-none"
+            onClick={() => navigate('/settings')}
+          >
             <Settings className="w-4 h-4 sm:mr-2" />
             <span className="hidden sm:inline">Settings</span>
           </Button>
