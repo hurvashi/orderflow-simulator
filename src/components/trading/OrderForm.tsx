@@ -12,23 +12,40 @@ import { Calculator, TrendingUp, Clock, AlertTriangle } from 'lucide-react';
 interface OrderFormProps {
   marketData: MarketData | null;
   onSimulateOrder: (order: OrderFormData) => OrderSimulation;
+  activeVenue: string;
+  activeSymbol: string;
+  onVenueChange: (venue: string) => void;
+  onSymbolChange: (symbol: string) => void;
   className?: string;
 }
 
 export const OrderForm: React.FC<OrderFormProps> = ({
   marketData,
   onSimulateOrder,
+  activeVenue,
+  activeSymbol,
+  onVenueChange,
+  onSymbolChange,
   className
 }) => {
   const [formData, setFormData] = useState<OrderFormData>({
-    venue: 'OKX',
-    symbol: 'BTC-USDT',
+    venue: activeVenue as any,
+    symbol: activeSymbol,
     orderType: 'Limit',
     side: 'Buy',
     price: undefined,
     quantity: 0,
     timing: 'immediate'
   });
+
+  // Update form data when active venue/symbol changes
+  React.useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      venue: activeVenue as any,
+      symbol: activeSymbol
+    }));
+  }, [activeVenue, activeSymbol]);
 
   const [simulation, setSimulation] = useState<OrderSimulation | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -91,7 +108,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             <Label>Venue</Label>
             <Select 
               value={formData.venue} 
-              onValueChange={(value: any) => updateFormData('venue', value)}
+              onValueChange={(value: any) => {
+                updateFormData('venue', value);
+                onVenueChange(value);
+              }}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -108,7 +128,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({
             <Label>Symbol</Label>
             <Input
               value={formData.symbol}
-              onChange={(e) => updateFormData('symbol', e.target.value)}
+              onChange={(e) => {
+                updateFormData('symbol', e.target.value);
+                onSymbolChange(e.target.value);
+              }}
               placeholder="BTC-USDT"
             />
           </div>

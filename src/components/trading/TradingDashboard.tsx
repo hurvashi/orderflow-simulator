@@ -61,6 +61,11 @@ export const TradingDashboard: React.FC = () => {
     setSimulatedOrder(null); // Clear simulation when symbol changes
   };
 
+  const handleVenueChange = (venue: string) => {
+    setActiveVenue(venue as any);
+    setSimulatedOrder(null); // Clear simulation when venue changes
+  };
+
   const handleRefresh = () => {
     // Force reconnection
     window.location.reload();
@@ -203,6 +208,10 @@ export const TradingDashboard: React.FC = () => {
           <OrderForm
             marketData={activeData.marketData}
             onSimulateOrder={handleOrderSimulation}
+            activeVenue={activeVenue}
+            activeSymbol={activeSymbol}
+            onVenueChange={handleVenueChange}
+            onSymbolChange={handleSymbolChange}
             className="w-full"
           />
         </div>
