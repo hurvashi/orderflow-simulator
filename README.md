@@ -32,7 +32,7 @@ npm run dev
 
 This project is built with:
 
-- Next.js
+- React.js
 - TypeScript
 - Tailwind CSS
 - Recharts
